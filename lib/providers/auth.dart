@@ -31,18 +31,13 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
-    final url = 'http://localhost:3000/$urlSegment';
+    final url = 'http://192.168.15.33:3000/$urlSegment';
+
+    var bodyEncoded = json.encode({'email': email, 'password': password});
 
     try {
-      final response = await http.post(
-        url,
-        body: json.encode(
-          {
-            'email': email,
-            'password': password,
-          },
-        ),
-      );
+      final response = await http.post(url,
+          body: bodyEncoded, headers: {"Content-Type": "application/json"});
 
       final responseData = json.decode(response.body);
 
@@ -50,8 +45,8 @@ class Auth with ChangeNotifier {
         throw HttpException(responseData['error']['message']);
       }
 
-      _token = responseData['idToken'];
-      _userId = responseData['localId'];
+      _token = responseData['token'];
+      _userId = responseData['user']['id'];
       _expiryDate = DateTime.now().add(
         Duration(days: 7),
       );

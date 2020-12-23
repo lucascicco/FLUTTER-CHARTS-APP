@@ -67,11 +67,11 @@ class _AuthCardState extends State<AuthCard>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('An Error Occurred!'),
+        title: Text('Um erro aconteceu'),
         content: Text(message),
         actions: <Widget>[
           FlatButton(
-            child: Text('Okay'),
+            child: Text('Entendi'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -94,19 +94,20 @@ class _AuthCardState extends State<AuthCard>
       if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<Auth>(context, listen: false).login(
-          _authData['email'],
-          _authData['password'],
+          _authData['email'].trim(),
+          _authData['password'].trim(),
         );
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(
-          _authData['email'],
-          _authData['password'],
+          _authData['email'].trim(),
+          _authData['password'].trim(),
         );
       }
     } on HttpException {
       _showErrorDialog('Autenticação falhou');
     } catch (error) {
+      print(error);
       _showErrorDialog(
           'Não conseguimos fazer sua autenticação. Por favor, tente mais tarde.');
     }
@@ -153,11 +154,11 @@ class _AuthCardState extends State<AuthCard>
             child: Column(
               children: <Widget>[
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
+                  decoration: InputDecoration(labelText: 'E-mail'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
+                      return 'E-mail inválido';
                     }
                   },
                   onSaved: (value) {
@@ -165,12 +166,12 @@ class _AuthCardState extends State<AuthCard>
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: InputDecoration(labelText: 'Senha'),
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
                     if (value.isEmpty || value.length < 5) {
-                      return 'Password is too short!';
+                      return 'Senha muito curta';
                     }
                   },
                   onSaved: (value) {
@@ -191,12 +192,12 @@ class _AuthCardState extends State<AuthCard>
                       child: TextFormField(
                         enabled: _authMode == AuthMode.Signup,
                         decoration:
-                            InputDecoration(labelText: 'Confirm Password'),
+                            InputDecoration(labelText: 'Confirme a senha'),
                         obscureText: true,
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
                                 if (value != _passwordController.text) {
-                                  return 'Passwords do not match!';
+                                  return 'As senhas não batem';
                                 }
                               }
                             : null,
@@ -211,8 +212,8 @@ class _AuthCardState extends State<AuthCard>
                   CircularProgressIndicator()
                 else
                   RaisedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                    child: Text(
+                        _authMode == AuthMode.Login ? 'ACESSAR' : 'CADASTRAR'),
                     onPressed: _submit,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -224,7 +225,7 @@ class _AuthCardState extends State<AuthCard>
                   ),
                 FlatButton(
                   child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                      '${_authMode == AuthMode.Login ? 'CRIE UMA CONTA' : 'ACESSAR'}'),
                   onPressed: _switchAuthMode,
                   padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
