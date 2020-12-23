@@ -94,14 +94,14 @@ class _AuthCardState extends State<AuthCard>
       if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<Auth>(context, listen: false).login(
-          _authData['email'].trim(),
-          _authData['password'].trim(),
+          _authData['email'],
+          _authData['password'],
         );
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(
-          _authData['email'].trim(),
-          _authData['password'].trim(),
+          _authData['email'],
+          _authData['password'],
         );
       }
     } on HttpException {
@@ -162,7 +162,7 @@ class _AuthCardState extends State<AuthCard>
                     }
                   },
                   onSaved: (value) {
-                    _authData['email'] = value;
+                    _authData['email'] = value.trim();
                   },
                 ),
                 TextFormField(
@@ -175,7 +175,7 @@ class _AuthCardState extends State<AuthCard>
                     }
                   },
                   onSaved: (value) {
-                    _authData['password'] = value;
+                    _authData['password'] = value.toString();
                   },
                 ),
                 AnimatedContainer(
