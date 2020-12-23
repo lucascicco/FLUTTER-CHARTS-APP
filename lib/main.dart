@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import './providers/auth.dart';
 
 import './screens/auth_screen.dart';
+import './screens/splash_screen.dart';
+import './screens/charts_overview.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,7 +27,16 @@ class MyApp extends StatelessWidget {
             accentColor: Colors.deepOrangeAccent,
             fontFamily: 'Lato',
           ),
-          home: auth.isAuth ? Text('Authenticated') : AuthScreen(),
+          home: auth.isAuth
+              ? ChartOverview()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
           routes: {},
         ),
       ),

@@ -24,6 +24,7 @@ class _AuthCardState extends State<AuthCard>
     'email': '',
     'password': '',
   };
+
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
@@ -133,106 +134,142 @@ class _AuthCardState extends State<AuthCard>
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 8.0,
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-        height: _authMode == AuthMode.Signup ? 320 : 260,
-        // height: _heightAnimation.value.height,
-        constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
-        width: deviceSize.width * 0.75,
-        padding: EdgeInsets.all(16.0),
+    return AnimatedContainer(
+      height: _authMode == AuthMode.Signup ? 350 : 260,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(60), topRight: Radius.circular(60))),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'E-mail inválido';
-                    }
-                  },
-                  onSaved: (value) {
-                    _authData['email'] = value.trim();
-                  },
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Senha'),
-                  obscureText: true,
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value.isEmpty || value.length < 5) {
-                      return 'Senha muito curta';
-                    }
-                  },
-                  onSaved: (value) {
-                    _authData['password'] = value.toString();
-                  },
-                ),
-                AnimatedContainer(
-                  constraints: BoxConstraints(
-                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
-                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
-                  ),
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                  child: FadeTransition(
-                    opacity: _opacityAnimation,
-                    child: SlideTransition(
-                      position: _slideAnimation,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromRGBO(255, 95, 27, .3),
+                          blurRadius: 20,
+                          offset: Offset(0, 10))
+                    ]),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.grey[200]))),
                       child: TextFormField(
-                        enabled: _authMode == AuthMode.Signup,
-                        decoration:
-                            InputDecoration(labelText: 'Confirme a senha'),
-                        obscureText: true,
-                        validator: _authMode == AuthMode.Signup
-                            ? (value) {
-                                if (value != _passwordController.text) {
-                                  return 'As senhas não batem';
-                                }
-                              }
-                            : null,
+                        decoration: InputDecoration(
+                            hintText: "Insira seu email",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            border: InputBorder.none),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value.isEmpty || !value.contains('@')) {
+                            return 'E-mail inválido';
+                          }
+                        },
+                        onSaved: (value) {
+                          _authData['email'] = value.trim();
+                        },
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                if (_isLoading)
-                  CircularProgressIndicator()
-                else
-                  RaisedButton(
-                    child: Text(
-                        _authMode == AuthMode.Login ? 'ACESSAR' : 'CADASTRAR'),
-                    onPressed: _submit,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(color: Colors.grey[200]))),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: "Insira sua senha",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none),
+                          obscureText: true,
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value.isEmpty || value.length < 5) {
+                              return 'Senha muito curta';
+                            }
+                          },
+                          onSaved: (value) {
+                            _authData['password'] = value.toString();
+                          },
+                        )),
+                    AnimatedContainer(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.grey[200]))),
+                      constraints: BoxConstraints(
+                        minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                        maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
+                      ),
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeIn,
+                      child: FadeTransition(
+                        opacity: _opacityAnimation,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: TextFormField(
+                            enabled: _authMode == AuthMode.Signup,
+                            decoration: InputDecoration(
+                                hintText: "Confirme a senha",
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: InputBorder.none),
+                            obscureText: true,
+                            validator: _authMode == AuthMode.Signup
+                                ? (value) {
+                                    if (value != _passwordController.text) {
+                                      return 'As senhas não batem';
+                                    }
+                                  }
+                                : null,
+                          ),
+                        ),
+                      ),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    color: Theme.of(context).primaryColor,
-                    textColor: Theme.of(context).primaryTextTheme.button.color,
-                  ),
-                FlatButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'CRIE UMA CONTA' : 'ACESSAR'}'),
-                  onPressed: _switchAuthMode,
-                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  textColor: Theme.of(context).primaryColor,
+                  ],
                 ),
-              ],
-            ),
+              ),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                Column(
+                  children: [
+                    FlatButton(
+                      child: Text(
+                          '${_authMode == AuthMode.Login ? 'CRIE UMA CONTA' : 'JÁ POSSUO'}'),
+                      onPressed: _switchAuthMode,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      textColor: Theme.of(context).primaryColor,
+                    ),
+                    RaisedButton(
+                      child: Icon(Icons.arrow_forward),
+                      onPressed: _submit,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                      color: Theme.of(context).primaryColor,
+                      textColor:
+                          Theme.of(context).primaryTextTheme.button.color,
+                    ),
+                  ],
+                )
+            ],
           ),
         ),
       ),

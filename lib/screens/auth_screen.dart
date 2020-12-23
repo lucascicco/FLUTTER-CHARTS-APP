@@ -14,13 +14,12 @@ class AuthScreen extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
+                begin: Alignment.topCenter,
                 colors: [
-                  Colors.white,
-                  Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
+                  Colors.orange[900],
+                  Colors.orange[700],
+                  Colors.orange[400],
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0, 1],
               ),
             ),
           ),
@@ -29,38 +28,27 @@ class AuthScreen extends StatelessWidget {
               height: deviceSize.height,
               width: deviceSize.width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Flexible(
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 20.0),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.deepOrange.shade900,
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 8,
-                            color: Colors.black26,
-                            offset: Offset(0, 2),
-                          )
+                  SizedBox(height: 30),
+                  Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('Gráficos App',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 40,
+                                  fontFamily: 'Anton')),
+                          SizedBox(height: 10),
+                          Text(
+                              'Seja bem-vindo, cadastre-se ou entre com sua conta',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18))
                         ],
-                      ),
-                      child: Text(
-                        'Gráficos App',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColorLight,
-                          fontSize: 50,
-                          fontFamily: 'Anton',
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: deviceSize.width > 600 ? 2 : 1,
+                      )),
+                  Expanded(
                     child: AuthCard(),
                   ),
                 ],
