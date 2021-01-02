@@ -5,6 +5,8 @@ import './providers/auth.dart';
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/charts_overview.dart';
+import './screens/list_screeen.dart';
+import './screens/add_chart_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,7 +39,10 @@ class MyApp extends StatelessWidget {
                           ? SplashScreen()
                           : AuthScreen(),
                 ),
-          routes: {},
+          routes: {
+            ListCharts.routeName: (ctx) => ListCharts(),
+            AddChart.routeName: (ctx) => AddChart()
+          },
         ),
       ),
     );
