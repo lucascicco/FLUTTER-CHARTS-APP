@@ -12,6 +12,7 @@ class AddChart extends StatelessWidget {
 
     AppBar appBar = AppBar(
       automaticallyImplyLeading: true,
+      backgroundColor: Colors.blueGrey,
       leading: IconButton(
         icon: Icon(Icons.arrow_back),
         onPressed: () {
@@ -27,8 +28,6 @@ class AddChart extends StatelessWidget {
       body: Container(
           height: heightAv,
           width: deviceSize.width,
-          decoration:
-              BoxDecoration(border: Border.all(color: Colors.blueAccent)),
           child: AddChartDetails(height: heightAv)),
     );
   }

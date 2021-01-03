@@ -22,7 +22,18 @@ class _AddChartDetailsState extends State<AddChartDetails> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.bottomRight,
+                end: Alignment(-0.4, -0.8),
+                stops: [0.0, 0.5, 0.5, 1],
+                colors: [
+                  Colors.blueGrey,
+                  Colors.blueGrey,
+                  Colors.white,
+                  Colors.white,
+                ],
+                tileMode: TileMode.repeated)),
         width: double.maxFinite,
         height: widget.height * 0.95,
         child: Column(
@@ -35,7 +46,8 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                 Column(children: <Widget>[
                   Text(
                     'Selecione o tipo de gráfico',
-                    style: TextStyle(fontSize: 25),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(
                     height: 20,
@@ -47,7 +59,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                       underline: Container(
                         height: 2,
                         width: double.infinity,
-                        color: Colors.orange,
+                        color: Colors.grey,
                       ),
                       onChanged: (String newValue) {
                         setState(() {
@@ -137,6 +149,9 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                 },
                               ),
                               ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.blueGrey,
+                                  ),
                                   onPressed: () {
                                     print('THATS WORKING');
                                   },
@@ -149,12 +164,6 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                   ),
                 ),
               ),
-              if (openForm)
-                ElevatedButton(
-                    onPressed: () {
-                      print('THATS WORKING');
-                    },
-                    child: Text('Adicionar item'))
             ]),
       ),
     );
