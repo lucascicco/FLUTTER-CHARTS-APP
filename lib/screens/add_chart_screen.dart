@@ -8,8 +8,6 @@ class AddChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-
     AppBar appBar = AppBar(
       automaticallyImplyLeading: true,
       backgroundColor: Colors.blueGrey,
@@ -21,14 +19,6 @@ class AddChart extends StatelessWidget {
       ),
     );
 
-    final heightAv = deviceSize.height - appBar.preferredSize.height;
-
-    return Scaffold(
-      appBar: appBar,
-      body: Container(
-          height: heightAv,
-          width: deviceSize.width,
-          child: AddChartDetails(height: heightAv)),
-    );
+    return Scaffold(appBar: appBar, body: AddChartDetails());
   }
 }
