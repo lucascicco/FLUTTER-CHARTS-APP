@@ -23,6 +23,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
+            border: Border.all(color: Colors.blueAccent),
             gradient: LinearGradient(
                 begin: Alignment.bottomRight,
                 end: Alignment(-0.4, -0.8),
@@ -35,7 +36,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                 ],
                 tileMode: TileMode.repeated)),
         width: double.maxFinite,
-        height: widget.height * 0.95,
+        height: widget.height * 0.96,
         child: Column(
             mainAxisAlignment: openForm
                 ? MainAxisAlignment.spaceBetween
@@ -164,6 +165,30 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                   ),
                 ),
               ),
+              if (openForm)
+                Container(
+                  margin: EdgeInsets.only(bottom: 15.0),
+                  child: RaisedButton(
+                      onPressed: () {
+                        print('Testing');
+                      },
+                      color: Colors.grey,
+                      textColor: Colors.white,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        children: <Widget>[
+                          Icon(Icons.add_circle_rounded, size: 45),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Gerar gráfico',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ],
+                      )),
+                ),
             ]),
       ),
     );
