@@ -108,7 +108,6 @@ class _AuthCardState extends State<AuthCard>
     } on HttpException {
       _showErrorDialog('Autenticação falhou');
     } catch (error) {
-      print(error);
       _showErrorDialog(
           'Não conseguimos fazer sua autenticação. Por favor, tente mais tarde.');
     }

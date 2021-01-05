@@ -19,8 +19,10 @@ class Charts with ChangeNotifier {
     return _items.where((item) => item.type == categoryId);
   }
 
-  findItemCategory(String id) {
-    return _items.where((item) => item.id == id);
+  bool findExistingItem(int categoryId, String title) {
+    return _items
+        .where((item) => item.type == categoryId)
+        .contains((element) => {element.title = title});
   }
 
   Future<void> addChart(ChartOne item) async {
