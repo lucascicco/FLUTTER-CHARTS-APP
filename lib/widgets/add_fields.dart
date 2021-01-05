@@ -21,6 +21,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
 
   bool openForm = false;
   bool startAnimation = false;
+  bool startSecondAnimation = false;
   bool loading = false;
 
   List<String> dropdownValues = ['Barras', 'Linhas', 'Pizza'];
@@ -111,16 +112,28 @@ class _AddChartDetailsState extends State<AddChartDetails> {
     });
   }
 
-  void nextWidget() {
+  Future<void> sleepFunction({int seconds = 1, int animationType}) {
+    return Future.delayed(Duration(seconds: seconds), () {
+      if (animationType == 1) {
+        setState(() {
+          openForm = true;
+        });
+      } else {
+        setState(() {
+          startSecondAnimation = true;
+        });
+      }
+    });
+  }
+
+  void nextWidget() async {
     setState(() {
       startAnimation = true;
     });
 
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        openForm = true;
-      });
-    });
+    await sleepFunction(animationType: 1);
+
+    await sleepFunction(animationType: 2);
   }
 
   @override
@@ -196,126 +209,129 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                 )
               ]),
             ),
-            AnimatedPositioned(
-              top: openForm ? 0 : constraints.maxHeight,
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              curve: Curves.elasticInOut,
-              duration: Duration(seconds: 1),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Card(
-                      margin: EdgeInsets.all(10.0),
-                      elevation: 8.0,
-                      child: Container(
-                        width: double.infinity,
-                        height: constraints.maxHeight < 400
-                            ? constraints.maxHeight * 0.9
-                            : constraints.maxHeight * 0.6,
-                        padding: EdgeInsets.all(10.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(children: <Widget>[
-                            TextFormField(
-                              decoration: InputDecoration(labelText: 'Título'),
-                              keyboardType: TextInputType.text,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Título inválido';
-                                }
-                              },
-                              onSaved: (value) {
-                                chartTitle = value.trim().toUpperCase();
-                              },
-                            ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Card(
-                                  margin: EdgeInsets.only(top: 15),
-                                  elevation: 6.0,
-                                  child: Container(
-                                    padding: EdgeInsets.all(10.0),
-                                    width: double.infinity,
-                                    child: Column(
-                                      children: <Widget>[
-                                        TextFormField(
-                                          decoration: InputDecoration(
-                                              labelText: 'Nome do item'),
-                                          keyboardType: TextInputType.text,
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Nome inválido';
-                                            }
-                                          },
-                                          onSaved: (value) {
-                                            _chartDetails['name'] = value;
-                                          },
-                                        ),
-                                        TextFormField(
-                                          inputFormatters: [porcentageMask],
-                                          decoration: InputDecoration(
-                                              labelText: 'Valor em porcentagem',
-                                              hintText:
-                                                  'Exemplo: 25.70, será igual a 25.7%'),
-                                          keyboardType: TextInputType.number,
-                                          maxLength: 5,
-                                          validator: (value) {
-                                            if (value.isEmpty ||
-                                                value.length < 3) {
-                                              return 'Valor inválido';
-                                            }
-                                          },
-                                          onSaved: (value) {
-                                            _chartDetails['value'] =
-                                                double.parse(value);
-                                          },
-                                        ),
-                                        ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Colors.blueGrey,
-                                            ),
-                                            onPressed: () {
-                                              print(constraints.maxHeight);
+            if (openForm)
+              AnimatedPositioned(
+                top: startSecondAnimation ? 0 : constraints.maxHeight,
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                curve: Curves.elasticInOut,
+                duration: Duration(seconds: 1),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Card(
+                        margin: EdgeInsets.all(10.0),
+                        elevation: 8.0,
+                        child: Container(
+                          width: double.infinity,
+                          height: constraints.maxHeight < 400
+                              ? constraints.maxHeight * 0.9
+                              : constraints.maxHeight * 0.6,
+                          padding: EdgeInsets.all(10.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(children: <Widget>[
+                              TextFormField(
+                                decoration:
+                                    InputDecoration(labelText: 'Título'),
+                                keyboardType: TextInputType.text,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Título inválido';
+                                  }
+                                },
+                                onSaved: (value) {
+                                  chartTitle = value.trim().toUpperCase();
+                                },
+                              ),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Card(
+                                    margin: EdgeInsets.only(top: 15),
+                                    elevation: 6.0,
+                                    child: Container(
+                                      padding: EdgeInsets.all(10.0),
+                                      width: double.infinity,
+                                      child: Column(
+                                        children: <Widget>[
+                                          TextFormField(
+                                            decoration: InputDecoration(
+                                                labelText: 'Nome do item'),
+                                            keyboardType: TextInputType.text,
+                                            validator: (value) {
+                                              if (value.isEmpty) {
+                                                return 'Nome inválido';
+                                              }
                                             },
-                                            child: Text('Adicionar item'))
-                                      ],
+                                            onSaved: (value) {
+                                              _chartDetails['name'] = value;
+                                            },
+                                          ),
+                                          TextFormField(
+                                            inputFormatters: [porcentageMask],
+                                            decoration: InputDecoration(
+                                                labelText:
+                                                    'Valor em porcentagem',
+                                                hintText:
+                                                    'Exemplo: 25.70, será igual a 25.7%'),
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 5,
+                                            validator: (value) {
+                                              if (value.isEmpty ||
+                                                  value.length < 3) {
+                                                return 'Valor inválido';
+                                              }
+                                            },
+                                            onSaved: (value) {
+                                              _chartDetails['value'] =
+                                                  double.parse(value);
+                                            },
+                                          ),
+                                          ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Colors.blueGrey,
+                                              ),
+                                              onPressed: () {
+                                                print(constraints.maxHeight);
+                                              },
+                                              child: Text('Adicionar item'))
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ]),
+                            ]),
+                          ),
                         ),
                       ),
-                    ),
-                    if (constraints.maxHeight > 400)
-                      Container(
-                        margin: EdgeInsets.only(bottom: 15.0),
-                        child: RaisedButton(
-                            onPressed: _submit,
-                            color: Colors.grey,
-                            textColor: Colors.white,
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: <Widget>[
-                                if (loading)
-                                  LinearProgressIndicator(
-                                      backgroundColor: Colors.grey),
-                                Icon(Icons.add_circle_rounded, size: 45),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  loading ? 'Processando' : 'Gerar gráfico',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                              ],
-                            )),
-                      ),
-                  ]),
-            ),
+                      if (constraints.maxHeight > 400)
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15.0),
+                          child: RaisedButton(
+                              onPressed: _submit,
+                              color: Colors.grey,
+                              textColor: Colors.white,
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                children: <Widget>[
+                                  if (loading)
+                                    LinearProgressIndicator(
+                                        backgroundColor: Colors.grey),
+                                  Icon(Icons.add_circle_rounded, size: 45),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    loading ? 'Processando' : 'Gerar gráfico',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              )),
+                        ),
+                    ]),
+              ),
           ],
         ),
       );
