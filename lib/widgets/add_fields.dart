@@ -5,9 +5,12 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+import '../screens/show_chart.dart';
 import '../providers/charts.dart';
 
 import '../models/chart_one.dart';
+import '../models/chart_item_one.dart';
 
 class AddChartDetails extends StatefulWidget {
   AddChartDetails({Key key}) : super(key: key);
@@ -29,7 +32,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
   String chartTitle = '';
   bool keyboardOpen = false;
   Map<String, dynamic> _chartDetails = {'name': '', 'value': '', 'color': ''};
-  List values = [];
+  List<ItemChart> values = [];
 
   var porcentageMask = new MaskTextInputFormatter(
       mask: '##.##', filter: {"#": RegExp(r'[0-9]')});
@@ -53,11 +56,15 @@ class _AddChartDetailsState extends State<AddChartDetails> {
   }
 
   void addValue() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return ShowChart(); //a screen
+    }));
+
     bool existingItem =
         values.contains((item) => item.name == _chartDetails['name']);
 
     if (existingItem) {
-      return;
+      return _showErrorDialog('Esse valor já existe para este gráfico');
     }
 
     Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
@@ -76,13 +83,17 @@ class _AddChartDetailsState extends State<AddChartDetails> {
     }
 
     double sumAvalaible =
-        values.reduce((current, next) => current.value + next.value);
+        values.map((e) => e.value).reduce((value, element) => value + element);
 
     if (_chartDetails['value'] > sumAvalaible) {
-      return;
+      return _showErrorDialog(
+          'A porcentagem dada em decimal está maior que o valor disponível para inserção');
     }
 
-    values.add(_chartDetails);
+    values.add(new ItemChart(
+        name: _chartDetails['name'],
+        color: _chartDetails['color'],
+        value: _chartDetails['value']));
 
     setState(() {
       _chartDetails['value'] = '';
@@ -96,13 +107,18 @@ class _AddChartDetailsState extends State<AddChartDetails> {
       loading = true;
     });
 
-    try {
-      await Provider.of<Charts>(context, listen: false).addChart(new ChartOne(
-          title: chartTitle,
-          values: values,
-          type: dropdownValues.indexOf(dropdownValue)));
+    ChartOne chartToBeCreated = new ChartOne(
+        title: chartTitle,
+        values: values,
+        type: dropdownValues.indexOf(dropdownValue));
 
-      //abrir página com gráfico aberto.
+    try {
+      await Provider.of<Charts>(context, listen: false)
+          .addChart(chartToBeCreated);
+
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        return ShowChart(chartOne: chartToBeCreated); //a screen
+      }));
     } catch (e) {
       _showErrorDialog(e);
     }
@@ -141,7 +157,6 @@ class _AddChartDetailsState extends State<AddChartDetails> {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.blueAccent),
             gradient: LinearGradient(
                 begin: Alignment.bottomRight,
                 end: Alignment(-0.4, -0.8),
@@ -232,9 +247,12 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                             key: _formKey,
                             child: Column(children: <Widget>[
                               TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'Título'),
+                                decoration: InputDecoration(
+                                  labelText: 'Título',
+                                ),
                                 keyboardType: TextInputType.text,
+                                maxLength: 25,
+                                maxLengthEnforced: true,
                                 validator: (value) {
                                   if (value.isEmpty) {
                                     return 'Título inválido';
@@ -291,9 +309,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                               style: ElevatedButton.styleFrom(
                                                 primary: Colors.blueGrey,
                                               ),
-                                              onPressed: () {
-                                                print(constraints.maxHeight);
-                                              },
+                                              onPressed: addValue,
                                               child: Text('Adicionar item'))
                                         ],
                                       ),

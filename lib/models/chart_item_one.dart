@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-class PieItem {
-  final String nome;
-  final String color;
-  final double porcentage;
+class ItemChart {
+  final String name;
+  final Color color;
+  final double value;
 
-  PieItem(
-      {@required this.nome, @required this.color, @required this.porcentage});
+  ItemChart({@required this.name, @required this.color, @required this.value});
 }
