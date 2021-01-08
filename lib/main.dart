@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import './providers/auth.dart';
+import './providers/charts.dart';
 
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
@@ -20,6 +22,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Auth(),
         ),
+        ChangeNotifierProxyProvider<Auth, Charts>(
+            create: (ctx) => Charts(),
+            update: (ctx, auth, chart) => chart..receiveToken(auth.token)),
       ],
       child: Consumer<Auth>(
         builder: (ctx, auth, _) => MaterialApp(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
+import '../models/http_exception.dart';
+
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../screens/show_chart.dart';
@@ -21,18 +23,20 @@ class AddChartDetails extends StatefulWidget {
 
 class _AddChartDetailsState extends State<AddChartDetails> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKeyTwo = GlobalKey();
 
   bool openForm = false;
   bool startAnimation = false;
   bool startSecondAnimation = false;
   bool loading = false;
 
-  List<String> dropdownValues = ['Barras', 'Linhas', 'Pizza'];
+  List<String> dropdownValues = ['Barras', 'Pizza'];
   String dropdownValue = 'Barras';
   String chartTitle = '';
   bool keyboardOpen = false;
-  Map<String, dynamic> _chartDetails = {'name': '', 'value': '', 'color': ''};
+  Map<String, dynamic> _chartDetails = {'name': '', 'value': ''};
   List<ItemChart> values = [];
+  double restSpace = 0;
 
   var porcentageMask = new MaskTextInputFormatter(
       mask: '##.##', filter: {"#": RegExp(r'[0-9]')});
@@ -56,9 +60,11 @@ class _AddChartDetailsState extends State<AddChartDetails> {
   }
 
   void addValue() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      return ShowChart(); //a screen
-    }));
+    if (!_formKeyTwo.currentState.validate()) {
+      // Invalid!
+      return;
+    }
+    _formKeyTwo.currentState.save();
 
     bool existingItem =
         values.contains((item) => item.name == _chartDetails['name']);
@@ -82,27 +88,44 @@ class _AddChartDetailsState extends State<AddChartDetails> {
       }
     }
 
-    double sumAvalaible =
-        values.map((e) => e.value).reduce((value, element) => value + element);
+    double total = values.length == 0
+        ? 0.00
+        : values
+            .map((e) => e.value)
+            .toList()
+            .reduce((value, element) => value + element);
 
-    if (_chartDetails['value'] > sumAvalaible) {
+    double availableSpace = 100.00 - total;
+
+    if (_chartDetails['value'] > availableSpace) {
       return _showErrorDialog(
-          'A porcentagem dada em decimal está maior que o valor disponível para inserção');
+          'A porcentagem dada em decimal está maior que o valor disponível para inserção. Restante: $availableSpace');
     }
 
     values.add(new ItemChart(
         name: _chartDetails['name'],
-        color: _chartDetails['color'],
+        color: color,
         value: _chartDetails['value']));
 
     setState(() {
-      _chartDetails['value'] = '';
-      _chartDetails['color'] = '';
-      _chartDetails['name'] = '';
+      restSpace = total + _chartDetails['value'];
     });
+
+    _formKeyTwo.currentState.reset();
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(BuildContext context) async {
+    if (values.length == 0) {
+      return;
+    }
+
+    if (!_formKey.currentState.validate()) {
+      // Invalid!
+      return;
+    }
+
+    _formKey.currentState.save();
+
     setState(() {
       loading = true;
     });
@@ -113,14 +136,17 @@ class _AddChartDetailsState extends State<AddChartDetails> {
         type: dropdownValues.indexOf(dropdownValue));
 
     try {
-      await Provider.of<Charts>(context, listen: false)
-          .addChart(chartToBeCreated);
+      await Provider.of<Charts>(context, listen: false).addChart(
+        chartToBeCreated,
+      );
 
       Navigator.of(context).push(MaterialPageRoute(builder: (_) {
         return ShowChart(chartOne: chartToBeCreated); //a screen
       }));
+    } on HttpException catch (e) {
+      _showErrorDialog(e.toString());
     } catch (e) {
-      _showErrorDialog(e);
+      _showErrorDialog(e.toString());
     }
 
     setState(() {
@@ -243,10 +269,10 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                               ? constraints.maxHeight * 0.9
                               : constraints.maxHeight * 0.6,
                           padding: EdgeInsets.all(10.0),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(children: <Widget>[
-                              TextFormField(
+                          child: Column(children: <Widget>[
+                            Form(
+                              key: _formKey,
+                              child: TextFormField(
                                 decoration: InputDecoration(
                                   labelText: 'Título',
                                 ),
@@ -262,14 +288,20 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                   chartTitle = value.trim().toUpperCase();
                                 },
                               ),
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  child: Card(
-                                    margin: EdgeInsets.only(top: 15),
-                                    elevation: 6.0,
-                                    child: Container(
-                                      padding: EdgeInsets.all(10.0),
-                                      width: double.infinity,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Card(
+                                  elevation: 5.0,
+                                  child: Container(
+                                    padding: EdgeInsets.all(15.0),
+                                    width: constraints.maxWidth * 0.90,
+                                    color: Colors.grey[100],
+                                    child: Form(
+                                      key: _formKeyTwo,
                                       child: Column(
                                         children: <Widget>[
                                           TextFormField(
@@ -291,12 +323,13 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                                 labelText:
                                                     'Valor em porcentagem',
                                                 hintText:
-                                                    'Exemplo: 25.70, será igual a 25.7%'),
+                                                    'Exemplo: 25.70, será igual a 25.7%',
+                                                helperText:
+                                                    'Já usado $restSpace'),
                                             keyboardType: TextInputType.number,
                                             maxLength: 5,
                                             validator: (value) {
-                                              if (value.isEmpty ||
-                                                  value.length < 3) {
+                                              if (value.isEmpty) {
                                                 return 'Valor inválido';
                                               }
                                             },
@@ -317,15 +350,16 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                   ),
                                 ),
                               ),
-                            ]),
-                          ),
+                            ),
+                          ]),
                         ),
                       ),
                       if (constraints.maxHeight > 400)
                         Container(
+                          width: constraints.maxWidth * 0.4,
                           margin: EdgeInsets.only(bottom: 15.0),
                           child: RaisedButton(
-                              onPressed: _submit,
+                              onPressed: () => {_submit(context)},
                               color: Colors.grey,
                               textColor: Colors.white,
                               padding: EdgeInsets.all(10.0),
@@ -334,7 +368,8 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                   if (loading)
                                     LinearProgressIndicator(
                                         backgroundColor: Colors.grey),
-                                  Icon(Icons.add_circle_rounded, size: 45),
+                                  if (!loading)
+                                    Icon(Icons.add_circle_rounded, size: 45),
                                   SizedBox(
                                     height: 10,
                                   ),

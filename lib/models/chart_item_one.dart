@@ -6,4 +6,8 @@ class ItemChart {
   final double value;
 
   ItemChart({@required this.name, @required this.color, @required this.value});
+
+  toJson() {
+    return {'name': name, 'color': color.value, 'value': value};
+  }
 }

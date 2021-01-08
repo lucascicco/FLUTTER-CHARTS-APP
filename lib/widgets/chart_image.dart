@@ -11,7 +11,7 @@ class ChartShow extends StatelessWidget {
   final ChartOne chartOne;
 
   Widget returnChart() {
-    List _seriesData;
+    List<charts.Series<ItemChart, String>> _seriesData = [];
 
     _seriesData.add(charts.Series<ItemChart, String>(
       domainFn: (ItemChart x, _) => x.name,
@@ -23,24 +23,16 @@ class ChartShow extends StatelessWidget {
     ));
 
     if (chartOne.type == 0) {
-      return charts.BarChart(
+      return new charts.BarChart(
         _seriesData,
         animate: true,
         barGroupingType: charts.BarGroupingType.grouped,
-        animationDuration: Duration(seconds: 5),
-      );
-    } else if (chartOne.type == 1) {
-      return charts.LineChart(
-        _seriesData,
-        defaultRenderer:
-            new charts.LineRendererConfig(includeArea: true, stacked: true),
-        animate: true,
-        animationDuration: Duration(seconds: 5),
+        animationDuration: Duration(seconds: 2),
       );
     } else {
-      return charts.PieChart(_seriesData,
+      return new charts.PieChart(_seriesData,
           animate: true,
-          animationDuration: Duration(seconds: 5),
+          animationDuration: Duration(seconds: 2),
           behaviors: [
             new charts.DatumLegend(
               outsideJustification: charts.OutsideJustification.endDrawArea,
@@ -48,9 +40,9 @@ class ChartShow extends StatelessWidget {
               desiredMaxRows: 2,
               cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
               entryTextStyle: charts.TextStyleSpec(
-                  color: charts.MaterialPalette.purple.shadeDefault,
+                  color: charts.MaterialPalette.black,
                   fontFamily: 'Georgia',
-                  fontSize: 11),
+                  fontSize: 15),
             )
           ],
           defaultRenderer: new charts.ArcRendererConfig(
@@ -69,21 +61,20 @@ class ChartShow extends StatelessWidget {
         child: Container(
           height: constraints.maxHeight,
           width: constraints.maxWidth,
+          padding: EdgeInsets.all(15.0),
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.blueAccent),
-              gradient: LinearGradient(
-                  begin: Alignment.bottomRight,
-                  end: Alignment(-0.4, -0.8),
-                  stops: [0.0, 0.5, 0.5, 1],
-                  colors: [
-                    Colors.blueGrey,
-                    Colors.blueGrey,
-                    Colors.white,
-                    Colors.white,
-                  ],
-                  tileMode: TileMode.repeated)),
+            border: Border.all(color: Colors.blueAccent),
+          ),
           child: Column(
-            children: <Widget>[Expanded(child: returnChart())],
+            children: <Widget>[
+              Text(chartOne.title,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.bold)),
+              SizedBox(height: 20),
+              Expanded(child: returnChart())
+            ],
           ),
         ),
       );
