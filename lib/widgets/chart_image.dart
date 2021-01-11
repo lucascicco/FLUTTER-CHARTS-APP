@@ -10,25 +10,20 @@ class ChartShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      return SingleChildScrollView(
-        child: Container(
-          height: constraints.maxHeight,
-          width: constraints.maxWidth,
-          padding: EdgeInsets.all(15.0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.blueAccent),
-          ),
-          child: Column(
-            children: <Widget>[
-              Text(chartOne.title,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: 20),
-              Expanded(child: ChartView(chartOne: chartOne))
-            ],
-          ),
+      return Container(
+        height: constraints.maxHeight,
+        width: constraints.maxWidth,
+        padding: EdgeInsets.all(15.0),
+        child: Column(
+          children: <Widget>[
+            Text(chartOne.title,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Lato',
+                    fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
+            Expanded(child: ChartView(chartOne: chartOne))
+          ],
         ),
       );
     });

@@ -41,20 +41,18 @@ class ChartsGrid extends StatelessWidget {
       );
     }
 
-    return LayoutBuilder(builder: (ctx, constraints) {
-      return GridView.builder(
-          padding: const EdgeInsets.all(10.0),
-          shrinkWrap: true,
-          itemCount: arrayCharts.length,
-          itemBuilder: (ctx, i) {
-            return chartItem(arrayCharts[i]);
-          },
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ));
-    });
+    return GridView.builder(
+        padding: const EdgeInsets.all(10.0),
+        shrinkWrap: true,
+        itemCount: arrayCharts.length,
+        itemBuilder: (ctx, i) {
+          return chartItem(arrayCharts[i]);
+        },
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 3 / 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ));
   }
 }

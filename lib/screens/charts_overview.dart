@@ -20,31 +20,12 @@ class _ChartOverviewState extends State<ChartOverview> {
   var _isLoading = false;
 
   List<String> chartsList = <String>[
-    'Sem filtro',
     'Barras',
     'Pizza',
   ];
 
   String filterCategory = '';
   String textFilter = '';
-
-  int get categoryId {
-    return filterCategory.length > 0
-        ? chartsList.indexOf(filterCategory) - 1
-        : 2;
-  }
-
-  void setFilter(String filter) {
-    setState(() {
-      filterCategory = filter;
-    });
-  }
-
-  void setText(String text) {
-    setState(() {
-      textFilter = text;
-    });
-  }
 
   @override
   void initState() {
@@ -73,6 +54,22 @@ class _ChartOverviewState extends State<ChartOverview> {
     await Provider.of<Auth>(context, listen: false).logout();
   }
 
+  int get categoryId {
+    return filterCategory.length > 0 ? chartsList.indexOf(filterCategory) : 2;
+  }
+
+  void setFilter(String filter) {
+    setState(() {
+      filterCategory = filter;
+    });
+  }
+
+  void setText(String text) {
+    setState(() {
+      textFilter = text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,12 +94,14 @@ class _ChartOverviewState extends State<ChartOverview> {
             : Column(
                 children: <Widget>[
                   SearchChartWidget(
-                    filterSet: setFilter,
-                    chartsList: chartsList,
-                    selectedItem: filterCategory,
-                    setText: setText,
-                  ),
-                  ChartsGrid(categoryId: categoryId, textFilter: textFilter)
+                      filterSet: setFilter,
+                      chartsList: chartsList,
+                      selectedItem: filterCategory,
+                      setText: setText,
+                      filterCategory: filterCategory),
+                  Expanded(
+                      child: ChartsGrid(
+                          categoryId: categoryId, textFilter: textFilter))
                 ],
               ),
       ),
