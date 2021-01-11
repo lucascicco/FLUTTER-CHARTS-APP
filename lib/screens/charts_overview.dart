@@ -6,6 +6,7 @@ import '../widgets/app_drawer.dart';
 import '../screens/add_chart_screen.dart';
 import '../widgets/search_widget.dart';
 import '../providers/charts.dart';
+import '../widgets/charts_grid.dart';
 
 class ChartOverview extends StatefulWidget {
   ChartOverview({Key key}) : super(key: key);
@@ -15,29 +16,15 @@ class ChartOverview extends StatefulWidget {
 }
 
 class _ChartOverviewState extends State<ChartOverview> {
-  Future<void> logout() async {
-    await Provider.of<Auth>(context, listen: false).logout();
-  }
-
+  var _isInit = true;
+  var _isLoading = false;
   List<String> chartsList = <String>[
     'Sem filtro',
     'Barras',
-    'Linhas',
     'Pizza',
   ];
 
   String filterCategory;
-
-  void setFilter(String filter) {
-    setState(() {
-      filterCategory = filter;
-    });
-
-    //;
-  }
-
-  var _isInit = true;
-  var _isLoading = false;
 
   @override
   void initState() {
@@ -58,7 +45,18 @@ class _ChartOverviewState extends State<ChartOverview> {
     }
 
     _isInit = false;
+
     super.didChangeDependencies();
+  }
+
+  Future<void> logout() async {
+    await Provider.of<Auth>(context, listen: false).logout();
+  }
+
+  void setFilter(String filter) {
+    setState(() {
+      filterCategory = filter;
+    });
   }
 
   @override
@@ -81,14 +79,16 @@ class _ChartOverviewState extends State<ChartOverview> {
       body: Container(
         padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-        child: Column(
-          children: <Widget>[
-            SearchChartWidget(
-                filterSet: setFilter,
-                chartsList: chartsList,
-                selectedItem: filterCategory)
-          ],
-        ),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                children: <Widget>[
+                  SearchChartWidget(
+                      filterSet: setFilter,
+                      chartsList: chartsList,
+                      selectedItem: filterCategory),
+                ],
+              ),
       ),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../widgets/chart_image.dart';
 import '../models/chart_one.dart';
+import '../providers/charts.dart';
 
 class ShowChart extends StatelessWidget {
   const ShowChart({Key key, this.chartOne}) : super(key: key);
@@ -18,6 +21,19 @@ class ShowChart extends StatelessWidget {
           Navigator.of(context).pushReplacementNamed('/');
         },
       ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+          onPressed: () {
+            Provider.of<Charts>(context, listen: false)
+                .deleteChart(chartOne.id);
+            Navigator.of(context).pushReplacementNamed('/');
+          },
+        )
+      ],
     );
 
     return Scaffold(appBar: appBar, body: ChartShow(chartOne: chartOne));

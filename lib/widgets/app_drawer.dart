@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
-import '../screens/list_screeen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -14,10 +13,10 @@ class AppDrawer extends StatelessWidget {
             height: 25,
           ),
           ListTile(
-            leading: Icon(Icons.list),
-            title: Text('Lista de gráficos'),
+            leading: Icon(Icons.home),
+            title: Text('Início'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(ListCharts.routeName);
+              Navigator.of(context).pushReplacementNamed('/');
             },
           ),
           Divider(),
@@ -27,7 +26,6 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
-
               Provider.of<Auth>(context, listen: false).logout();
             },
           ),

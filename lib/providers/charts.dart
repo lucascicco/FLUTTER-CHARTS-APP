@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import '../models/chart_one.dart';
+import '../models/chart_item_one.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -51,7 +52,6 @@ class Charts with ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (responseData['error'] != null) {
-        print('Erro achado');
         throw HttpException(responseData['error']);
       }
 
@@ -59,7 +59,7 @@ class Charts with ChangeNotifier {
           title: item.title,
           values: item.values,
           type: item.type,
-          id: responseData['id']);
+          id: responseData['_id']);
 
       _items.add(itemFull);
 
@@ -80,11 +80,27 @@ class Charts with ChangeNotifier {
 
       final responseData = json.decode(response.body);
 
-      if (responseData['error'] != null) {
-        throw HttpException(responseData['error']['message']);
+      List<ChartOne> loadedCharts = [];
+
+      if (responseData.length > 0) {
+        return responseData.forEach((element) {
+          List<ItemChart> values = [];
+
+          element['values'].forEach((e) => values.add(ItemChart(
+              name: e['name'],
+              color: new Color(e['color']),
+              value: double.parse(e['value']))));
+
+          loadedCharts.add(ChartOne(
+            id: element['_id'],
+            title: element['title'],
+            type: element['type'],
+            values: values,
+          ));
+        });
       }
 
-      _items = responseData;
+      _items = loadedCharts;
 
       notifyListeners();
     } catch (e) {
@@ -104,7 +120,7 @@ class Charts with ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (responseData['error'] != null) {
-        throw HttpException(responseData['error']['message']);
+        throw HttpException(responseData['error']);
       }
 
       _items.removeWhere((item) => item.id == id);
