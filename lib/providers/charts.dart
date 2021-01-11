@@ -33,7 +33,7 @@ class Charts with ChangeNotifier {
         .contains((element) => {element.title = title});
   }
 
-  Future<void> addChart(ChartOne item) async {
+  Future<ChartOne> addChart(ChartOne item) async {
     final url = 'http://192.168.15.33:3000/create-charts';
 
     var valuesEncoded = item.values.map((e) => e.toJson()).toList();
@@ -65,6 +65,8 @@ class Charts with ChangeNotifier {
       _items.add(itemFull);
 
       notifyListeners();
+
+      return itemFull;
     } catch (e) {
       throw e;
     }

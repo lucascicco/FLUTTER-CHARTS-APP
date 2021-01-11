@@ -18,6 +18,7 @@ class ChartOverview extends StatefulWidget {
 class _ChartOverviewState extends State<ChartOverview> {
   var _isInit = true;
   var _isLoading = false;
+
   List<String> chartsList = <String>[
     'Sem filtro',
     'Barras',

@@ -16,19 +16,19 @@ class ChartsGrid extends StatelessWidget {
     Widget chartItem(ChartOne item) {
       return Card(
         elevation: 8.0,
-        child: Container(
-          padding: EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                return ShowChart(chartOne: item); //a screen
-              }));
-            },
+        child: InkWell(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+              return ShowChart(chartOne: item); //a screen
+            }));
+          },
+          child: Container(
+            padding: EdgeInsets.all(10.0),
             child: Column(
               children: <Widget>[
                 Text(item.title),
                 Expanded(
-                  child: ChartView(chartOne: item),
+                  child: ChartView(chartOne: item, showSubtitle: false),
                 )
               ],
             ),

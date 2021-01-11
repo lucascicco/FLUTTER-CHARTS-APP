@@ -136,13 +136,15 @@ class _AddChartDetailsState extends State<AddChartDetails> {
         type: dropdownValues.indexOf(dropdownValue));
 
     try {
-      await Provider.of<Charts>(context, listen: false).addChart(
+      await Provider.of<Charts>(context, listen: false)
+          .addChart(
         chartToBeCreated,
-      );
-
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-        return ShowChart(chartOne: chartToBeCreated); //a screen
-      }));
+      )
+          .then((item) {
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+          return ShowChart(chartOne: item); //a screen
+        }));
+      });
     } on HttpException catch (e) {
       _showErrorDialog(e.toString());
     } catch (e) {
