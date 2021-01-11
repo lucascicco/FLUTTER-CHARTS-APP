@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import '../models/chart_one.dart';
@@ -83,13 +84,15 @@ class Charts with ChangeNotifier {
       List<ChartOne> loadedCharts = [];
 
       if (responseData.length > 0) {
-        return responseData.forEach((element) {
+        responseData.forEach((element) {
           List<ItemChart> values = [];
 
-          element['values'].forEach((e) => values.add(ItemChart(
-              name: e['name'],
-              color: new Color(e['color']),
-              value: double.parse(e['value']))));
+          element['values'].forEach((e) {
+            values.add(ItemChart(
+                name: e['name'],
+                color: new Color(e['color']),
+                value: double.parse(e['value'].toString())));
+          });
 
           loadedCharts.add(ChartOne(
             id: element['_id'],

@@ -87,6 +87,7 @@ class _ChartOverviewState extends State<ChartOverview> {
                       filterSet: setFilter,
                       chartsList: chartsList,
                       selectedItem: filterCategory),
+                  ChartsGrid()
                 ],
               ),
       ),
