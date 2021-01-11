@@ -156,7 +156,7 @@ class _AuthCardState extends State<AuthCard>
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                          color: Color.fromRGBO(255, 95, 27, .3),
+                          color: Colors.grey,
                           blurRadius: 20,
                           offset: Offset(0, 10))
                     ]),

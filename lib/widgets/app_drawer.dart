@@ -12,13 +12,6 @@ class AppDrawer extends StatelessWidget {
           SizedBox(
             height: 25,
           ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Início'),
-            onTap: () {
-              Navigator.of(context).pushReplacementNamed('/');
-            },
-          ),
           Divider(),
           ListTile(
             leading: Icon(Icons.exit_to_app),

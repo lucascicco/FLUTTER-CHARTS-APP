@@ -25,7 +25,26 @@ class _ChartOverviewState extends State<ChartOverview> {
     'Pizza',
   ];
 
-  String filterCategory;
+  String filterCategory = '';
+  String textFilter = '';
+
+  int get categoryId {
+    return filterCategory.length > 0
+        ? chartsList.indexOf(filterCategory) - 1
+        : 2;
+  }
+
+  void setFilter(String filter) {
+    setState(() {
+      filterCategory = filter;
+    });
+  }
+
+  void setText(String text) {
+    setState(() {
+      textFilter = text;
+    });
+  }
 
   @override
   void initState() {
@@ -54,12 +73,6 @@ class _ChartOverviewState extends State<ChartOverview> {
     await Provider.of<Auth>(context, listen: false).logout();
   }
 
-  void setFilter(String filter) {
-    setState(() {
-      filterCategory = filter;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,16 +92,17 @@ class _ChartOverviewState extends State<ChartOverview> {
       drawer: AppDrawer(),
       body: Container(
         padding: EdgeInsets.all(10.0),
-        decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : Column(
                 children: <Widget>[
                   SearchChartWidget(
-                      filterSet: setFilter,
-                      chartsList: chartsList,
-                      selectedItem: filterCategory),
-                  ChartsGrid()
+                    filterSet: setFilter,
+                    chartsList: chartsList,
+                    selectedItem: filterCategory,
+                    setText: setText,
+                  ),
+                  ChartsGrid(categoryId: categoryId, textFilter: textFilter)
                 ],
               ),
       ),

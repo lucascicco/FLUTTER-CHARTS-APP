@@ -7,11 +7,15 @@ import '../screens/show_chart.dart';
 import '../widgets/chart_view.dart';
 
 class ChartsGrid extends StatelessWidget {
-  const ChartsGrid({Key key}) : super(key: key);
+  ChartsGrid({Key key, this.categoryId, this.textFilter}) : super(key: key);
+
+  int categoryId;
+  String textFilter;
 
   @override
   Widget build(BuildContext context) {
     final charts = Provider.of<Charts>(context);
+    final arrayCharts = charts.filteredItems(categoryId, textFilter);
 
     Widget chartItem(ChartOne item) {
       return Card(
@@ -41,9 +45,9 @@ class ChartsGrid extends StatelessWidget {
       return GridView.builder(
           padding: const EdgeInsets.all(10.0),
           shrinkWrap: true,
-          itemCount: charts.items.length,
+          itemCount: arrayCharts.length,
           itemBuilder: (ctx, i) {
-            return chartItem(charts.items[i]);
+            return chartItem(arrayCharts[i]);
           },
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,

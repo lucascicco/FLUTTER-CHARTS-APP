@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'My charts',
           theme: ThemeData(
-            primarySwatch: Colors.deepOrange,
-            accentColor: Colors.deepOrangeAccent,
+            primarySwatch: Colors.blueGrey,
+            accentColor: Colors.grey,
             fontFamily: 'Lato',
           ),
           home: auth.isAuth

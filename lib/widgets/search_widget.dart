@@ -4,9 +4,14 @@ class SearchChartWidget extends StatefulWidget {
   final Function filterSet;
   final List<String> chartsList;
   final String selectedItem;
+  final Function setText;
 
   SearchChartWidget(
-      {Key key, this.filterSet, this.chartsList, this.selectedItem})
+      {Key key,
+      this.filterSet,
+      this.chartsList,
+      this.selectedItem,
+      this.setText})
       : super(key: key);
 
   @override
@@ -22,8 +27,12 @@ class _SearchChartWidgetState extends State<SearchChartWidget> {
         child: Row(
           children: <Widget>[
             Expanded(
-              child: TextFormField(
+              child: TextField(
                 cursorColor: Colors.black,
+                onChanged: (value) {
+                  print(value);
+                  widget.setText(value);
+                },
                 decoration: new InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(),

@@ -25,7 +25,7 @@ class ShowChart extends StatelessWidget {
         IconButton(
           icon: Icon(
             Icons.delete,
-            color: Colors.red,
+            color: Colors.redAccent,
           ),
           onPressed: () {
             Provider.of<Charts>(context, listen: false)
