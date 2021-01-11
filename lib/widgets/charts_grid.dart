@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/charts.dart';
 import '../models/chart_one.dart';
 import '../screens/show_chart.dart';
+import '../widgets/chart_view.dart';
 
 class ChartsGrid extends StatelessWidget {
   const ChartsGrid({Key key}) : super(key: key);
@@ -13,18 +14,22 @@ class ChartsGrid extends StatelessWidget {
     final charts = Provider.of<Charts>(context);
 
     Widget chartItem(ChartOne item) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-            return ShowChart(chartOne: item); //a screen
-          }));
-        },
-        child: Card(
-          elevation: 8.0,
-          child: Container(
+      return Card(
+        elevation: 8.0,
+        child: Container(
+          padding: EdgeInsets.all(10.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                return ShowChart(chartOne: item); //a screen
+              }));
+            },
             child: Column(
               children: <Widget>[
                 Text(item.title),
+                Expanded(
+                  child: ChartView(chartOne: item),
+                )
               ],
             ),
           ),
