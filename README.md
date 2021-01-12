@@ -35,6 +35,11 @@ The libraries used:
 ## Capturas de tela - Screenshots 
 //
 
+
+<hr/>
+
 Desenvolvido por,
-Developed by,
+
+Developed by
+
 lucascicco.
