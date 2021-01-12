@@ -30,9 +30,23 @@ class ChartsGrid extends StatelessWidget {
             padding: EdgeInsets.all(10.0),
             child: Column(
               children: <Widget>[
-                Text(item.title),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      child: Text(item.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontFamily: 'Georgia',
+                              fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
                 Expanded(
-                  child: ChartView(chartOne: item, showSubtitle: false),
+                  child: Container(
+                      color: Colors.grey[100],
+                      child: ChartView(chartOne: item, showSubtitle: false)),
                 )
               ],
             ),

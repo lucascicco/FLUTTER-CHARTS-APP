@@ -36,7 +36,7 @@ class Charts with ChangeNotifier {
 
     print(byText.length);
 
-    return categoryId != 2
+    return categoryId != 3
         ? byText.where((x) => x.type == categoryId).toList()
         : byText;
   }

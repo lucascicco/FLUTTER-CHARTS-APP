@@ -12,6 +12,7 @@ class ChartView extends StatelessWidget {
 
   Widget returnChart() {
     List<charts.Series<ItemChart, String>> _seriesData = [];
+    List<charts.Series<ItemChart, int>> _seriesListData = [];
 
     _seriesData.add(charts.Series<ItemChart, String>(
       domainFn: (ItemChart x, _) => x.name,
@@ -24,18 +25,35 @@ class ChartView extends StatelessWidget {
 
     if (chartOne.type == 0) {
       return new charts.BarChart(_seriesData,
-          animate: false,
+          animate: showSubtitle,
           barGroupingType: charts.BarGroupingType.grouped,
           animationDuration: Duration(seconds: 2),
+          barRendererDecorator: new charts.BarLabelDecorator<String>(
+              labelPosition: charts.BarLabelPosition.inside),
           primaryMeasureAxis: new charts.NumericAxisSpec(
-              renderSpec: new charts.NoneRenderSpec()),
+              renderSpec: new charts.GridlineRendererSpec(
+                  // Tick and Label styling here.
+                  labelStyle: new charts.TextStyleSpec(
+                      fontSize: showSubtitle ? 18 : 0, // size in Pts.
+                      color: charts.MaterialPalette.black),
+
+                  // Change the line colors to match text color.
+                  lineStyle: new charts.LineStyleSpec(
+                      color: showSubtitle
+                          ? charts.MaterialPalette.black
+                          : charts.MaterialPalette.transparent))),
           domainAxis: showSubtitle
-              ? new charts.OrdinalAxisSpec(showAxisLine: true)
+              ? new charts.OrdinalAxisSpec(
+                  showAxisLine: true,
+                  renderSpec: charts.SmallTickRendererSpec(
+                      minimumPaddingBetweenLabelsPx: 0,
+                      labelStyle: charts.TextStyleSpec(
+                          fontSize: 15, color: charts.MaterialPalette.black)))
               : new charts.OrdinalAxisSpec(
                   showAxisLine: true, renderSpec: new charts.NoneRenderSpec()));
-    } else {
+    } else if (chartOne.type == 1) {
       return new charts.PieChart(_seriesData,
-          animate: true,
+          animate: showSubtitle,
           animationDuration: Duration(seconds: 2),
           behaviors: [
             if (showSubtitle)
@@ -56,6 +74,19 @@ class ChartView extends StatelessWidget {
                 new charts.ArcLabelDecorator(
                     labelPosition: charts.ArcLabelPosition.inside)
               ]));
+    } else {
+      _seriesListData.add(charts.Series<ItemChart, int>(
+          id: 'Sales',
+          colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+          domainFn: (ItemChart sales, _) => sales.name,
+          measureFn: (ItemChart sales, _) => sales.value,
+          data: chartOne.values));
+
+      return new charts.LineChart(
+        _seriesListData,
+        animate: true,
+        animationDuration: Duration(seconds: 2),
+      );
     }
   }
 

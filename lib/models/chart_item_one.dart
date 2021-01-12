@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ItemChart {
-  final String name;
+  final name;
   final Color color;
-  final double value;
+  final value;
 
   ItemChart({@required this.name, @required this.color, @required this.value});
 

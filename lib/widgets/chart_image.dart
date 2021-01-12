@@ -16,11 +16,19 @@ class ChartShow extends StatelessWidget {
         padding: EdgeInsets.all(15.0),
         child: Column(
           children: <Widget>[
-            Text(chartOne.title,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Lato',
-                    fontWeight: FontWeight.bold)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Flexible(
+                  child: Text(chartOne.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontFamily: 'Georgia',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25)),
+                ),
+              ],
+            ),
             SizedBox(height: 20),
             Expanded(child: ChartView(chartOne: chartOne))
           ],

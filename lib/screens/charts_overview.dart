@@ -55,7 +55,7 @@ class _ChartOverviewState extends State<ChartOverview> {
   }
 
   int get categoryId {
-    return filterCategory.length > 0 ? chartsList.indexOf(filterCategory) : 2;
+    return filterCategory.length > 0 ? chartsList.indexOf(filterCategory) : 3;
   }
 
   void setFilter(String filter) {

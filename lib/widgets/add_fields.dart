@@ -30,7 +30,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
   bool startSecondAnimation = false;
   bool loading = false;
 
-  List<String> dropdownValues = ['Barras', 'Pizza'];
+  List<String> dropdownValues = ['Barras', 'Pizza', 'Linhas'];
   String dropdownValue = 'Barras';
   String chartTitle = '';
   bool keyboardOpen = false;
@@ -40,6 +40,9 @@ class _AddChartDetailsState extends State<AddChartDetails> {
 
   var porcentageMask = new MaskTextInputFormatter(
       mask: '##.##', filter: {"#": RegExp(r'[0-9]')});
+
+  var integerMask = new MaskTextInputFormatter(
+      mask: '#####', filter: {"#": RegExp(r'[0-9]')});
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -59,6 +62,30 @@ class _AddChartDetailsState extends State<AddChartDetails> {
     );
   }
 
+  Color generateColor() {
+    Color filteredColor =
+        Colors.primaries[Random().nextInt(Colors.primaries.length)];
+
+    bool verifyColor(Color color) {
+      return values
+          .where((element) => element.color == color)
+          .toList()
+          .isNotEmpty;
+    }
+
+    while (verifyColor(filteredColor)) {
+      filteredColor =
+          Colors.primaries[Random().nextInt(Colors.primaries.length)];
+      bool stopLooping = verifyColor(filteredColor);
+
+      if (!stopLooping) {
+        break;
+      }
+    }
+
+    return filteredColor;
+  }
+
   void addValue() {
     if (!_formKeyTwo.currentState.validate()) {
       // Invalid!
@@ -66,26 +93,21 @@ class _AddChartDetailsState extends State<AddChartDetails> {
     }
     _formKeyTwo.currentState.save();
 
-    bool existingItem =
-        values.contains((item) => item.name == _chartDetails['name']);
+    if (dropdownValue == 'Linhas') {
+      values.add(new ItemChart(
+          name: _chartDetails['name'],
+          color: generateColor(),
+          value: _chartDetails['value']));
+      return;
+    }
+
+    bool existingItem = values
+        .where((item) => item.name == _chartDetails['name'])
+        .toList()
+        .isNotEmpty;
 
     if (existingItem) {
       return _showErrorDialog('Esse valor já existe para este gráfico');
-    }
-
-    Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
-
-    bool verifyColor(Color colorCompare) {
-      return values.contains((item) => item.color == colorCompare);
-    }
-
-    while (verifyColor(color)) {
-      color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
-      bool stopLooping = verifyColor(color);
-
-      if (!stopLooping) {
-        break;
-      }
     }
 
     double total = values.length == 0
@@ -104,7 +126,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
 
     values.add(new ItemChart(
         name: _chartDetails['name'],
-        color: color,
+        color: generateColor(),
         value: _chartDetails['value']));
 
     setState(() {
@@ -182,6 +204,8 @@ class _AddChartDetailsState extends State<AddChartDetails> {
 
   @override
   Widget build(BuildContext context) {
+    bool lineChart = dropdownValue == 'Linhas';
+
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         decoration: BoxDecoration(
@@ -201,9 +225,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
         child: Stack(
           children: <Widget>[
             AnimatedPositioned(
-              top: startAnimation
-                  ? -constraints.maxHeight
-                  : constraints.maxWidth * 45 / 100,
+              top: startAnimation ? 1200 : constraints.maxWidth * 45 / 100,
               right: constraints.maxWidth * 7 / 100,
               width: constraints.maxWidth * 0.90,
               curve: Curves.slowMiddle,
@@ -245,7 +267,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                   onPressed: nextWidget,
                   color: Colors.grey,
                   child:
-                      Icon(Icons.arrow_right_alt_rounded, color: Colors.white),
+                      Icon(Icons.arrow_downward_outlined, color: Colors.white),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
                       side: BorderSide(color: Colors.white)),
@@ -254,7 +276,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
             ),
             if (openForm)
               AnimatedPositioned(
-                top: startSecondAnimation ? 0 : constraints.maxHeight,
+                top: startSecondAnimation ? 0 : -1000,
                 width: constraints.maxWidth,
                 height: constraints.maxHeight,
                 curve: Curves.elasticInOut,
@@ -307,27 +329,39 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                       child: Column(
                                         children: <Widget>[
                                           TextFormField(
+                                            inputFormatters:
+                                                lineChart ? [integerMask] : [],
                                             decoration: InputDecoration(
-                                                labelText: 'Nome do item'),
+                                                labelText: lineChart
+                                                    ? 'Valor em Y'
+                                                    : 'Nome do item'),
                                             keyboardType: TextInputType.text,
+                                            maxLength: lineChart ? 5 : 15,
                                             validator: (value) {
                                               if (value.isEmpty) {
-                                                return 'Nome inválido';
+                                                return 'Dado inválido';
                                               }
                                             },
                                             onSaved: (value) {
-                                              _chartDetails['name'] = value;
+                                              _chartDetails['name'] = lineChart
+                                                  ? int.parse(value)
+                                                  : value;
                                             },
                                           ),
                                           TextFormField(
-                                            inputFormatters: [porcentageMask],
+                                            inputFormatters: lineChart
+                                                ? [integerMask]
+                                                : [porcentageMask],
                                             decoration: InputDecoration(
-                                                labelText:
-                                                    'Valor em porcentagem',
-                                                hintText:
-                                                    'Exemplo: 25.70, será igual a 25.7%',
-                                                helperText:
-                                                    'Já usado $restSpace'),
+                                                labelText: lineChart
+                                                    ? 'Valor em X'
+                                                    : 'Valor em porcentagem',
+                                                hintText: lineChart
+                                                    ? 'Valor em decimal'
+                                                    : 'Exemplo: 25.70, será igual a 25.7%',
+                                                helperText: lineChart
+                                                    ? ''
+                                                    : 'Já usado $restSpace'),
                                             keyboardType: TextInputType.number,
                                             maxLength: 5,
                                             validator: (value) {
@@ -336,8 +370,9 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                               }
                                             },
                                             onSaved: (value) {
-                                              _chartDetails['value'] =
-                                                  double.parse(value);
+                                              _chartDetails['value'] = lineChart
+                                                  ? int.parse(value)
+                                                  : value;
                                             },
                                           ),
                                           ElevatedButton(
