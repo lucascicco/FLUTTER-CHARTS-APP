@@ -33,26 +33,23 @@ class ChartView extends StatelessWidget {
           primaryMeasureAxis: new charts.NumericAxisSpec(
               renderSpec: new charts.GridlineRendererSpec(
                   // Tick and Label styling here.
-                  labelStyle: showSubtitle
-                      ? new charts.TextStyleSpec(
-                          fontSize: showSubtitle ? 18 : 0, // size in Pts.
-                          color: charts.MaterialPalette.black)
-                      : new charts.TextStyleSpec(),
+                  labelStyle: new charts.TextStyleSpec(
+                      fontSize: showSubtitle ? 18 : 0, // size in Pts.
+                      color: charts.MaterialPalette.black),
+
                   // Change the line colors to match text color.
                   lineStyle: new charts.LineStyleSpec(
                       color: showSubtitle
                           ? charts.MaterialPalette.black
                           : charts.MaterialPalette.transparent))),
-          domainAxis: showSubtitle
-              ? new charts.OrdinalAxisSpec(
-                  showAxisLine: true,
-                  renderSpec: charts.SmallTickRendererSpec(
+          domainAxis: new charts.OrdinalAxisSpec(
+              showAxisLine: true,
+              renderSpec: showSubtitle
+                  ? charts.SmallTickRendererSpec(
                       minimumPaddingBetweenLabelsPx: 0,
                       labelStyle: charts.TextStyleSpec(
-                          fontSize: showSubtitle ? 18 : 0,
-                          color: charts.MaterialPalette.black)))
-              : new charts.OrdinalAxisSpec(
-                  showAxisLine: true, renderSpec: new charts.NoneRenderSpec()));
+                          fontSize: 14, color: charts.MaterialPalette.black))
+                  : new charts.NoneRenderSpec()));
     } else if (chartOne.type == 1) {
       return new charts.PieChart(_seriesData,
           animate: showSubtitle,
@@ -83,15 +80,17 @@ class ChartView extends StatelessWidget {
         id: chartOne.title,
         colorFn: (ItemChart x, _) => charts.ColorUtil.fromDartColor(x.color),
         data: chartOne.values,
-        labelAccessorFn: (ItemChart row, _) =>
-            showSubtitle ? '${row.value}' : '',
       ));
 
-      return new charts.LineChart(
-        _seriesListData,
-        animate: showSubtitle,
-        animationDuration: Duration(seconds: 2),
-      );
+      return new charts.LineChart(_seriesListData,
+          animate: showSubtitle,
+          defaultRenderer:
+              new charts.LineRendererConfig(includeArea: true, stacked: true),
+          animationDuration: Duration(seconds: 2),
+          domainAxis: charts.NumericAxisSpec(
+              showAxisLine: true, renderSpec: charts.NoneRenderSpec()),
+          primaryMeasureAxis:
+              charts.NumericAxisSpec(renderSpec: charts.NoneRenderSpec()));
     }
   }
 
