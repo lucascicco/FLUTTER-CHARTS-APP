@@ -42,7 +42,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
       mask: '##.##', filter: {"#": RegExp(r'[0-9]')});
 
   var integerMask = new MaskTextInputFormatter(
-      mask: '#####', filter: {"#": RegExp(r'[0-9]')});
+      mask: '###########', filter: {"#": RegExp(r'[0-9]')});
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -88,9 +88,9 @@ class _AddChartDetailsState extends State<AddChartDetails> {
 
   void addValue() {
     if (!_formKeyTwo.currentState.validate()) {
-      // Invalid!
       return;
     }
+
     _formKeyTwo.currentState.save();
 
     if (dropdownValue == 'Linhas') {
@@ -98,6 +98,8 @@ class _AddChartDetailsState extends State<AddChartDetails> {
           name: _chartDetails['name'],
           color: generateColor(),
           value: _chartDetails['value']));
+
+      _formKeyTwo.currentState.reset();
       return;
     }
 
@@ -333,10 +335,9 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                                 lineChart ? [integerMask] : [],
                                             decoration: InputDecoration(
                                                 labelText: lineChart
-                                                    ? 'Valor em Y'
+                                                    ? 'Valor em X'
                                                     : 'Nome do item'),
                                             keyboardType: TextInputType.text,
-                                            maxLength: lineChart ? 5 : 15,
                                             validator: (value) {
                                               if (value.isEmpty) {
                                                 return 'Dado inválido';
@@ -354,7 +355,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                                 : [porcentageMask],
                                             decoration: InputDecoration(
                                                 labelText: lineChart
-                                                    ? 'Valor em X'
+                                                    ? 'Valor em Y'
                                                     : 'Valor em porcentagem',
                                                 hintText: lineChart
                                                     ? 'Valor em decimal'
@@ -363,7 +364,6 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                                     ? ''
                                                     : 'Já usado $restSpace'),
                                             keyboardType: TextInputType.number,
-                                            maxLength: 5,
                                             validator: (value) {
                                               if (value.isEmpty) {
                                                 return 'Valor inválido';

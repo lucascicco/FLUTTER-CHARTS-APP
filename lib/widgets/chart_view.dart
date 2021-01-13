@@ -20,7 +20,7 @@ class ChartView extends StatelessWidget {
       id: chartOne.title,
       colorFn: (ItemChart x, _) => charts.ColorUtil.fromDartColor(x.color),
       data: chartOne.values,
-      labelAccessorFn: (ItemChart row, _) => '${row.value}',
+      labelAccessorFn: (ItemChart row, _) => showSubtitle ? '${row.value}' : '',
     ));
 
     if (chartOne.type == 0) {
@@ -33,10 +33,11 @@ class ChartView extends StatelessWidget {
           primaryMeasureAxis: new charts.NumericAxisSpec(
               renderSpec: new charts.GridlineRendererSpec(
                   // Tick and Label styling here.
-                  labelStyle: new charts.TextStyleSpec(
-                      fontSize: showSubtitle ? 18 : 0, // size in Pts.
-                      color: charts.MaterialPalette.black),
-
+                  labelStyle: showSubtitle
+                      ? new charts.TextStyleSpec(
+                          fontSize: showSubtitle ? 18 : 0, // size in Pts.
+                          color: charts.MaterialPalette.black)
+                      : new charts.TextStyleSpec(),
                   // Change the line colors to match text color.
                   lineStyle: new charts.LineStyleSpec(
                       color: showSubtitle
@@ -48,7 +49,8 @@ class ChartView extends StatelessWidget {
                   renderSpec: charts.SmallTickRendererSpec(
                       minimumPaddingBetweenLabelsPx: 0,
                       labelStyle: charts.TextStyleSpec(
-                          fontSize: 15, color: charts.MaterialPalette.black)))
+                          fontSize: showSubtitle ? 18 : 0,
+                          color: charts.MaterialPalette.black)))
               : new charts.OrdinalAxisSpec(
                   showAxisLine: true, renderSpec: new charts.NoneRenderSpec()));
     } else if (chartOne.type == 1) {
@@ -76,15 +78,18 @@ class ChartView extends StatelessWidget {
               ]));
     } else {
       _seriesListData.add(charts.Series<ItemChart, int>(
-          id: 'Sales',
-          colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-          domainFn: (ItemChart sales, _) => sales.name,
-          measureFn: (ItemChart sales, _) => sales.value,
-          data: chartOne.values));
+        domainFn: (ItemChart x, _) => x.name,
+        measureFn: (ItemChart x, _) => x.value,
+        id: chartOne.title,
+        colorFn: (ItemChart x, _) => charts.ColorUtil.fromDartColor(x.color),
+        data: chartOne.values,
+        labelAccessorFn: (ItemChart row, _) =>
+            showSubtitle ? '${row.value}' : '',
+      ));
 
       return new charts.LineChart(
         _seriesListData,
-        animate: true,
+        animate: showSubtitle,
         animationDuration: Duration(seconds: 2),
       );
     }

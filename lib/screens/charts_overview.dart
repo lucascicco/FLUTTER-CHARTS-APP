@@ -19,10 +19,7 @@ class _ChartOverviewState extends State<ChartOverview> {
   var _isInit = true;
   var _isLoading = false;
 
-  List<String> chartsList = <String>[
-    'Barras',
-    'Pizza',
-  ];
+  List<String> chartsList = <String>['Barras', 'Pizza', 'Linhas'];
 
   String filterCategory = '';
   String textFilter = '';

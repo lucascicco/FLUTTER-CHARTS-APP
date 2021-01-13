@@ -5,7 +5,7 @@ class ItemChart {
   final Color color;
   final value;
 
-  ItemChart({@required this.name, @required this.color, @required this.value});
+  ItemChart({@required this.name, this.color, @required this.value});
 
   toJson() {
     return {'name': name, 'color': color.value, 'value': value};
