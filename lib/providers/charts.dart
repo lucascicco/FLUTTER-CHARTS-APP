@@ -28,23 +28,12 @@ class Charts with ChangeNotifier {
   }
 
   List<ChartOne> filteredItems(int categoryId, String inputText) {
-    print(inputText);
-    print(categoryId);
-
     List<ChartOne> byText =
         _items.where((x) => x.title.contains(inputText.toUpperCase())).toList();
-
-    print(byText.length);
 
     return categoryId != 3
         ? byText.where((x) => x.type == categoryId).toList()
         : byText;
-  }
-
-  bool findExistingItem(int categoryId, String title) {
-    return _items
-        .where((item) => item.type == categoryId)
-        .contains((element) => {element.title == title});
   }
 
   Future<ChartOne> addChart(ChartOne item) async {

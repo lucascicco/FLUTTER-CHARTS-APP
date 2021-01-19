@@ -42,7 +42,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
       mask: '##.##', filter: {"#": RegExp(r'[0-9]')});
 
   var integerMask = new MaskTextInputFormatter(
-      mask: '###########', filter: {"#": RegExp(r'[0-9]')});
+      mask: '############', filter: {"#": RegExp(r'[0-9]')});
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -372,7 +372,7 @@ class _AddChartDetailsState extends State<AddChartDetails> {
                                             onSaved: (value) {
                                               _chartDetails['value'] = lineChart
                                                   ? int.parse(value)
-                                                  : value;
+                                                  : double.parse(value);
                                             },
                                           ),
                                           ElevatedButton(

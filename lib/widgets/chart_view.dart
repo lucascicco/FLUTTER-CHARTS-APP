@@ -80,17 +80,38 @@ class ChartView extends StatelessWidget {
         id: chartOne.title,
         colorFn: (ItemChart x, _) => charts.ColorUtil.fromDartColor(x.color),
         data: chartOne.values,
+        labelAccessorFn: (ItemChart row, _) =>
+            showSubtitle ? '${row.value}' : '',
       ));
 
-      return new charts.LineChart(_seriesListData,
-          animate: showSubtitle,
-          defaultRenderer:
-              new charts.LineRendererConfig(includeArea: true, stacked: true),
-          animationDuration: Duration(seconds: 2),
-          domainAxis: charts.NumericAxisSpec(
-              showAxisLine: true, renderSpec: charts.NoneRenderSpec()),
-          primaryMeasureAxis:
-              charts.NumericAxisSpec(renderSpec: charts.NoneRenderSpec()));
+      return new charts.LineChart(
+        _seriesListData,
+        animate: showSubtitle,
+        defaultRenderer:
+            new charts.LineRendererConfig(includeArea: true, stacked: true),
+        animationDuration: Duration(seconds: 2),
+        domainAxis: charts.NumericAxisSpec(
+            showAxisLine: true,
+            renderSpec: new charts.SmallTickRendererSpec(
+              labelStyle: new charts.TextStyleSpec(
+                  fontSize: showSubtitle ? 18 : 0, // size in Pts.
+                  color: charts.MaterialPalette.black),
+              lineStyle: new charts.LineStyleSpec(
+                  color: showSubtitle
+                      ? charts.MaterialPalette.black
+                      : charts.MaterialPalette.transparent),
+            )),
+        primaryMeasureAxis: charts.NumericAxisSpec(
+            renderSpec: new charts.SmallTickRendererSpec(
+          labelStyle: new charts.TextStyleSpec(
+              fontSize: showSubtitle ? 18 : 0, // size in Pts.
+              color: charts.MaterialPalette.black),
+          lineStyle: new charts.LineStyleSpec(
+              color: showSubtitle
+                  ? charts.MaterialPalette.black
+                  : charts.MaterialPalette.transparent),
+        )),
+      );
     }
   }
 

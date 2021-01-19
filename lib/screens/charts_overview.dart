@@ -31,6 +31,8 @@ class _ChartOverviewState extends State<ChartOverview> {
 
   @override
   void didChangeDependencies() {
+    print('It was called');
+
     if (_isInit) {
       setState(() {
         _isLoading = true;
