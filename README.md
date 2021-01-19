@@ -33,7 +33,25 @@ The libraries used:
 - flutter_picker
 
 ## Capturas de tela - Screenshots 
-//
+
+<p align=center> 
+    <span>
+        <img src="assets/screenshots/Login.gif" width=200 height=300/>
+        <img src="assets/screenshots/Animation.gif" width=200 height=300/>
+        <img src="assets/screenshots/Logout.gif" width=200 height=300/>
+    </span>
+    <br/>
+    <span>
+        <img src="assets/screenshots/ChartTest1.gif" width=200 height=300/>
+        <img src="assets/screenshots/ChartTest2.gif" width=200 height=300/>
+        <img src="assets/screenshots/ChartTest3.gif" width=200 height=300/>
+    </span>
+    <br/>
+    <span>
+        <img src="assets/screenshots/Filtering.gif" width=200 height=300/>
+        <img src="assets/screenshots/Querying.gif" width=200 height=300/>
+    </span>
+</p>
 
 
 <hr/>
